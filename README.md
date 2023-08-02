@@ -1,6 +1,8 @@
 # 비밀번호를 입력해 주세요
 
 ## 1. 개요
+![image](https://github.com/didam00/enterPassword/assets/47744125/630da266-7efe-472e-a907-40a2e2d39232)
+
 먼저, `비밀번호를 입력해주세요`(<https://didam00.github.io/enterPassword>)는 NEAL.FUN의 **\<Password Game\>**(<https://neal.fun/password-game/>)에서 영감을 받아 만들어 졌습니다. 계정을 새로 만들 때처럼 평범하게 조건에 맞는 비밀번호를 찾는 게임입니다. 새로운 비밀번호를 만든 이후에는 또 다른 '새 비밀번호'를 입력해줘야 합니다. 대표적으로 다음과 같은 조건이 있습니다.
 
 - 비밀번호는 최소 6자리 이상이어야 합니다. (새로 만들 때마다 증가)

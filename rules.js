@@ -269,7 +269,7 @@ rules = [
     },
     tmp: null,
     get text() {
-      return this.tmp ? "비밀번호엔 음계의 이름이 들어갈 수 없습니다: "+tmp[0] : null;
+      return this.tmp ? "비밀번호엔 음계의 이름이 들어갈 수 없습니다: "+this.tmp[0] : null;
     }
   },
   {

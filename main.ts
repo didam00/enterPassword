@@ -404,10 +404,16 @@ function applyPassword() {
   ], {
     duration: 1500,
   })
-  $('#pw-wrap').style.width = `${240 + used_passwords.length * 15}px`
+  $('#pw-wrap').style.width = `${250 + used_passwords.length * 5}px`
 
+  setTimeout(function () {
+    $('#pw-wrap').style.width = `${240 + used_passwords.length * 5}px`
+  }, 150)
+  
   $('#pw-wrap').classList.add('correct-eff');
-  setTimeout(function () {$('#pw-wrap').classList.remove('correct-eff');}, 400)
+  setTimeout(function () {
+    $('#pw-wrap').classList.remove('correct-eff');
+  }, 400)
 
   firework_particle();
 

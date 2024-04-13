@@ -4,6 +4,9 @@
 const TYPE_POP_URL = "./res/typing-pop.mp3";
 const SHOOT_POP_URL = "./res/shooting-sound-fx.mp3";
 const SPREAD_POP_URL = "./res/pop.mp3";
+const WRONG_SOUND_URL = "./res/wrong.mp3";
+
+const typingPopSound: HTMLAudioElement = new Audio(TYPE_POP_URL);
 
 class Vector {
   x: number;
@@ -135,23 +138,24 @@ class HSL {
 }
 
 let pwDiv = document.querySelector('.password') as HTMLInputElement;
-pwDiv.addEventListener("keyup", () => {
+pwDiv.addEventListener("keydown", () => {
   playSound(TYPE_POP_URL);
-  checkRules();
 });
+pwDiv.addEventListener("keyup", checkRules);
 let error = false;
 let blackChar: string[] = [];
 let whiteChar: string[] = [];
-let used_password: string[] = [];
+let used_passwords: string[] = [];
 
 let applyRules: number[] = [];
 
-while (applyRules.length < 5) {
-  let selectIndex = Math.floor(Math.random()*rules.length);
-  if (applyRules.indexOf(selectIndex) < 0) { // 존재하지 않는 경우
-    applyRules.push(selectIndex);
-  }
-}
+// * 처음에 룰을 추가
+// while (applyRules.length < 5) {
+//   let selectIndex = Math.floor(Math.random()*rules.length);
+//   if (applyRules.indexOf(selectIndex) < 0) { // 존재하지 않는 경우
+//     applyRules.push(selectIndex);
+//   }
+// }
 
 blackChar.push(String.fromCharCode(Math.floor(65+Math.random()*26)));
 blackChar.push(String.fromCharCode(Math.floor(97+Math.random()*26)));
@@ -179,13 +183,13 @@ function checkRules() {
 
   rulesDiv.innerHTML = '';
 
-  if (password.length < used_password.length + 6) {
+  if (password.length < used_passwords.length + 6) {
     error = true;
-    showRule(`비밀번호는 최소 ${used_password.length + 6}자 이상이어야 합니다.`);
+    showRule(`비밀번호는 최소 ${used_passwords.length + 6}자 이상이어야 합니다.`);
   }
-  if (password.length > used_password.length + 12) {
+  if (password.length > used_passwords.length + 12) {
     error = true;
-    showRule(`비밀번호는 최대 ${used_password.length + 12}자까지 설정할 수 있습니다.`);
+    showRule(`비밀번호는 최대 ${used_passwords.length + 12}자까지 설정할 수 있습니다.`);
   }
   if (password.match(/[^a-zA-Z0-9`~!.@#$%^&*|\\;:\/?_]/)) {
     tmp = password.match(/[^a-zA-Z0-9`~!.@#$%^&*|\\;:\/?_]/)
@@ -315,17 +319,21 @@ function checkRules() {
     }
   }
   
-  for (let pw of used_password) {
-    let overlap_count = 0;
-    for (let c of pw) {
-      if (password.indexOf(c) != -1) {
-        overlap_count++;
-      }
-    }
-    if (overlap_count >= 6) {
-      showRule("비밀번호엔 이미 사용했던 비밀번호가 6글자 이상 포함될 수 없습니다: "+pw);
-      error = true
-      break;
+  for (let used_password of used_passwords) {
+    // let overlap_count = 0;
+    // for (let c of pw) {
+    //   if (password.indexOf(c) != -1) {
+    //     overlap_count++;
+    //   }
+    // }
+    // if (overlap_count >= 6) {
+    //   showRule("비밀번호엔 이미 사용했던 비밀번호가 6글자 이상 포함될 수 없습니다: "+pw);
+    //   error = true
+    //   break;
+    // }
+    if (password.includes(used_password)) {
+      showRule("새 비밀번호엔 이전에 사용했던 비밀번호가 포함될 수 없습니다.");
+      error = true;
     }
   }
 
@@ -361,8 +369,8 @@ function $(q: string) {
 
 function applyPassword() {
   let pw = document.querySelector(".password") as HTMLInputElement;
-  used_password.push(pw.value);
-  pw.value = '';
+  used_passwords.push(pw.value);
+  // pw.value = '';
   (document.querySelector("title") as HTMLTitleElement).innerText = "새 비밀번호를 입력해 주세요";
 
   let no_rules: number[] = [];
@@ -374,14 +382,16 @@ function applyPassword() {
   }
 
   if (no_rules.length > 0) {
+    // 20번째부터 12번째마다 비밀 룰 추가
     let ranIdx = Math.floor(Math.random() * no_rules.length);
-    if(applyRules.length - 5 >= 6 && applyRules.length % 6 == 0) {
-      ranIdx *= -1;
+    if(applyRules.length >= 20 && (applyRules.length-20) % 12 == 0) {
+      applyRules.push(-no_rules[ranIdx]);
+    } else {
+      applyRules.push(no_rules[ranIdx]);
     }
-    applyRules.push(no_rules[ranIdx]);
   }
 
-  $('.re-pw-count').innerText = `비밀번호 바꾼 횟수: ${used_password.length}`
+  $('.re-pw-count').innerText = `비밀번호 바꾼 횟수: ${used_passwords.length}`
   $('.re-pw-count').style.fontSize = '13px';
   $('.re-pw-count').style.opacity = '1';
   $('.re-pw-count').animate([
@@ -394,7 +404,7 @@ function applyPassword() {
   ], {
     duration: 1500,
   })
-  $('#pw-wrap').style.width = `${240 + used_password.length * 15}px`
+  $('#pw-wrap').style.width = `${240 + used_passwords.length * 15}px`
 
   $('#pw-wrap').classList.add('correct-eff');
   setTimeout(function () {$('#pw-wrap').classList.remove('correct-eff');}, 400)
@@ -417,6 +427,7 @@ function notApplyPassword() {
       pw_wrap.classList.add('shake-eff');
     }, 1)
   }
+  playSound(WRONG_SOUND_URL);
 }
 
 function firework_particle() {
@@ -431,7 +442,7 @@ function firework_particle() {
 
   playSound(SHOOT_POP_URL);
 
-  for (let i = 0; i < applyRules.length - 5; i++) {
+  for (let i = 0; i < applyRules.length; i++) {
     let x = Math.random() * 1000 + 100;
     fw_ptcls.push(new FireWorkParticle(x, canvas.height, new HSL(Math.random() * 360, 66, 40), Math.random()*40+20));
   }

@@ -4,6 +4,8 @@
 var TYPE_POP_URL = "./res/typing-pop.mp3";
 var SHOOT_POP_URL = "./res/shooting-sound-fx.mp3";
 var SPREAD_POP_URL = "./res/pop.mp3";
+var WRONG_SOUND_URL = "./res/wrong.mp3";
+var typingPopSound = new Audio(TYPE_POP_URL);
 var Vector = /** @class */ (function () {
     function Vector(x, y) {
         this.x = x;
@@ -100,21 +102,22 @@ var HSL = /** @class */ (function () {
     return HSL;
 }());
 var pwDiv = document.querySelector('.password');
-pwDiv.addEventListener("keyup", function () {
+pwDiv.addEventListener("keydown", function () {
     playSound(TYPE_POP_URL);
-    checkRules();
 });
+pwDiv.addEventListener("keyup", checkRules);
 var error = false;
 var blackChar = [];
 var whiteChar = [];
-var used_password = [];
+var used_passwords = [];
 var applyRules = [];
-while (applyRules.length < 5) {
-    var selectIndex = Math.floor(Math.random() * rules.length);
-    if (applyRules.indexOf(selectIndex) < 0) { // 존재하지 않는 경우
-        applyRules.push(selectIndex);
-    }
-}
+// * 처음에 룰을 추가
+// while (applyRules.length < 5) {
+//   let selectIndex = Math.floor(Math.random()*rules.length);
+//   if (applyRules.indexOf(selectIndex) < 0) { // 존재하지 않는 경우
+//     applyRules.push(selectIndex);
+//   }
+// }
 blackChar.push(String.fromCharCode(Math.floor(65 + Math.random() * 26)));
 blackChar.push(String.fromCharCode(Math.floor(97 + Math.random() * 26)));
 whiteChar.push(String.fromCharCode(Math.floor(65 + Math.random() * 26)));
@@ -135,13 +138,13 @@ function checkRules() {
     }
     var tmp;
     rulesDiv.innerHTML = '';
-    if (password.length < used_password.length + 6) {
+    if (password.length < used_passwords.length + 6) {
         error = true;
-        showRule("\uBE44\uBC00\uBC88\uD638\uB294 \uCD5C\uC18C ".concat(used_password.length + 6, "\uC790 \uC774\uC0C1\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4."));
+        showRule("\uBE44\uBC00\uBC88\uD638\uB294 \uCD5C\uC18C ".concat(used_passwords.length + 6, "\uC790 \uC774\uC0C1\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4."));
     }
-    if (password.length > used_password.length + 12) {
+    if (password.length > used_passwords.length + 12) {
         error = true;
-        showRule("\uBE44\uBC00\uBC88\uD638\uB294 \uCD5C\uB300 ".concat(used_password.length + 12, "\uC790\uAE4C\uC9C0 \uC124\uC815\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."));
+        showRule("\uBE44\uBC00\uBC88\uD638\uB294 \uCD5C\uB300 ".concat(used_passwords.length + 12, "\uC790\uAE4C\uC9C0 \uC124\uC815\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."));
     }
     if (password.match(/[^a-zA-Z0-9`~!.@#$%^&*|\\;:\/?_]/)) {
         tmp = password.match(/[^a-zA-Z0-9`~!.@#$%^&*|\\;:\/?_]/);
@@ -274,19 +277,22 @@ function checkRules() {
         var i = applyRules_1[_i];
         _loop_1(i);
     }
-    for (var _a = 0, used_password_1 = used_password; _a < used_password_1.length; _a++) {
-        var pw = used_password_1[_a];
-        var overlap_count = 0;
-        for (var _b = 0, pw_1 = pw; _b < pw_1.length; _b++) {
-            var c = pw_1[_b];
-            if (password.indexOf(c) != -1) {
-                overlap_count++;
-            }
-        }
-        if (overlap_count >= 6) {
-            showRule("비밀번호엔 이미 사용했던 비밀번호가 6글자 이상 포함될 수 없습니다: " + pw);
+    for (var _a = 0, used_passwords_1 = used_passwords; _a < used_passwords_1.length; _a++) {
+        var used_password = used_passwords_1[_a];
+        // let overlap_count = 0;
+        // for (let c of pw) {
+        //   if (password.indexOf(c) != -1) {
+        //     overlap_count++;
+        //   }
+        // }
+        // if (overlap_count >= 6) {
+        //   showRule("비밀번호엔 이미 사용했던 비밀번호가 6글자 이상 포함될 수 없습니다: "+pw);
+        //   error = true
+        //   break;
+        // }
+        if (password.includes(used_password)) {
+            showRule("새 비밀번호엔 이전에 사용했던 비밀번호가 포함될 수 없습니다.");
             error = true;
-            break;
         }
     }
     if (!error) {
@@ -318,8 +324,8 @@ function $(q) {
 }
 function applyPassword() {
     var pw = document.querySelector(".password");
-    used_password.push(pw.value);
-    pw.value = '';
+    used_passwords.push(pw.value);
+    // pw.value = '';
     document.querySelector("title").innerText = "새 비밀번호를 입력해 주세요";
     var no_rules = [];
     for (var i = 0; i < rules.length; i++) {
@@ -328,13 +334,16 @@ function applyPassword() {
         }
     }
     if (no_rules.length > 0) {
+        // 20번째부터 12번째마다 비밀 룰 추가
         var ranIdx = Math.floor(Math.random() * no_rules.length);
-        if (applyRules.length - 5 >= 6 && applyRules.length % 6 == 0) {
-            ranIdx *= -1;
+        if (applyRules.length >= 20 && (applyRules.length - 20) % 12 == 0) {
+            applyRules.push(-no_rules[ranIdx]);
         }
-        applyRules.push(no_rules[ranIdx]);
+        else {
+            applyRules.push(no_rules[ranIdx]);
+        }
     }
-    $('.re-pw-count').innerText = "\uBE44\uBC00\uBC88\uD638 \uBC14\uAFBC \uD69F\uC218: ".concat(used_password.length);
+    $('.re-pw-count').innerText = "\uBE44\uBC00\uBC88\uD638 \uBC14\uAFBC \uD69F\uC218: ".concat(used_passwords.length);
     $('.re-pw-count').style.fontSize = '13px';
     $('.re-pw-count').style.opacity = '1';
     $('.re-pw-count').animate([
@@ -347,7 +356,7 @@ function applyPassword() {
     ], {
         duration: 1500,
     });
-    $('#pw-wrap').style.width = "".concat(240 + used_password.length * 15, "px");
+    $('#pw-wrap').style.width = "".concat(240 + used_passwords.length * 15, "px");
     $('#pw-wrap').classList.add('correct-eff');
     setTimeout(function () { $('#pw-wrap').classList.remove('correct-eff'); }, 400);
     firework_particle();
@@ -367,6 +376,7 @@ function notApplyPassword() {
             pw_wrap.classList.add('shake-eff');
         }, 1);
     }
+    playSound(WRONG_SOUND_URL);
 }
 function firework_particle() {
     var SIZE = 4;
@@ -376,7 +386,7 @@ function firework_particle() {
     var fw_ptcls = [];
     var dust_ptcls = [];
     playSound(SHOOT_POP_URL);
-    for (var i = 0; i < applyRules.length - 5; i++) {
+    for (var i = 0; i < applyRules.length; i++) {
         var x = Math.random() * 1000 + 100;
         fw_ptcls.push(new FireWorkParticle(x, canvas.height, new HSL(Math.random() * 360, 66, 40), Math.random() * 40 + 20));
     }

@@ -43,9 +43,9 @@
   animation-timing-function: ease-in-out;
 }
 
-html {
+:root {
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
 }
 
 body {

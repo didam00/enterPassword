@@ -34,41 +34,42 @@ const SYMBOLS = /[`~!@#$%^&*|\\;:\/?_.]/g;
 rules = [
   {
     check(password) {
-      let uprepeat = 1, downrepaet = 1;
+      let uprepeat = 1, downrepeat = 1;
       let asciiPassword = password.split('').map(a => a.charCodeAt())
       for (let i = 2; i < password.length; i++) {
         if (asciiPassword[i-2] + 1 == asciiPassword[i]) {
           uprepeat++;
         } else uprepeat = 1;
         if (asciiPassword[i-2] - 1 == asciiPassword[i]) {
-          downrepaet++;
-        } else downrepaet = 1;
+          downrepeat++;
+        } else downrepeat = 1;
 
-        if (uprepeat >= 3 || downrepeat >= 3) return false;
+        if (uprepeat >= 3 || downrepeat >= 3) return true;
       }
 
-      return true
+      return false;
     },
     get text() {
-      return "비밀번호엔 문자가 순서대로 3번 이상 한 글자 건너 뛰어 연속으로 올 수 없습니다.";
+      return "비밀번호엔 문자가 순서대로 3번 이상 한 글자 건너뛰어 연속으로 올 수 없습니다.";
     }
   },
   {
     check(password) {
-      let uprepeat = 1, downrepaet = 1;
+      let uprepeat = 1, downrepeat = 1;
       let asciiPassword = password.split('').map(a => a.charCodeAt())
+
       for (let i = 1; i < password.length; i++) {
         if (asciiPassword[i-1] + 1 == asciiPassword[i]) {
           uprepeat++;
         } else uprepeat = 1;
         if (asciiPassword[i-1] - 1 == asciiPassword[i]) {
-          downrepaet++;
-        } else downrepaet = 1;
-
-        if (uprepeat >= 3 || downrepeat >= 3) return false;
+          downrepeat++;
+        } else downrepeat = 1;
+        
+        if (uprepeat >= 3 || downrepeat >= 3) return true;
       }
 
-      return true;
+      return false;
     },
     get text() {
       return "비밀번호엔 문자가 순서대로 3번 이상 연속으로 올 수 없습니다.";
@@ -76,7 +77,15 @@ rules = [
   },
   {
     check(password) {
-      return isNaN(Number(password[0]));
+      return !isNaN(Number(password[0]));
+    },
+    get text() {
+      return "비밀번호의 첫글자가 숫자가 올 수 없습니다.";
+    }
+  },
+  {
+    check(password) {
+      return password.match(/(.).*\1.*\1.*\1.*\1/);
     },
     get text() {
       return "비밀번호엔 한 문자가 5번 이상 나올 수 없습니다.";
@@ -84,15 +93,7 @@ rules = [
   },
   {
     check(password) {
-      return !password.match(/(.).*\1.*\1.*\1.*\1/);
-    },
-    get text() {
-      return "비밀번호엔 한 문자가 5번 이상 나올 수 없습니다.";
-    }
-  },
-  {
-    check(password) {
-      return !password.match(/(..+)\1/);
+      return password.match(/(..+)\1/);
     },
     get text() {
       return "비밀번호엔 한 단어가 2번 이상 연속으로 반복될 수 없습니다.";
@@ -100,7 +101,7 @@ rules = [
   },
   {
     check(password) {
-      return !password.match(/(.)\1\1/);
+      return password.match(/(.)\1\1/);
     },
     get text() {
       return "비밀번호엔 한 문자가 3번 이상 연속으로 반복될 수 없습니다.";
@@ -108,7 +109,7 @@ rules = [
   },
   {
     check(password) {
-      return password.match(/[0-9]/);
+      return !password.match(/[0-9]/);
     },
     get text() {
       return "비밀번호엔 숫자가 하나 이상 들어가야합니다.";
@@ -116,7 +117,7 @@ rules = [
   },
   {
     check(password) {
-      return password.match(/[.`~!@#$%^&*|\\;:\/?_]/);
+      return !password.match(/[.`~!@#$%^&*|\\;:\/?_]/);
     },
     get text() {
       return "비밀번호엔 특수기호가 하나 이상 들어가야합니다.";
@@ -124,7 +125,7 @@ rules = [
   },
   {
     check(password) {
-      return password.match(/[a-z]/);
+      return !password.match(/[a-z]/);
     },
     get text() {
       return "비밀번호엔 소문자가 하나 이상 들어가야합니다.";
@@ -132,7 +133,7 @@ rules = [
   },
   {
     check(password) {
-      return password.match(/[A-Z]/);
+      return !password.match(/[A-Z]/);
     },
     get text() {
       return "비밀번호엔 대문자가 하나 이상 들어가야합니다.";
@@ -140,7 +141,7 @@ rules = [
   },
   {
     check(password) {
-      return !password.match(/\s/);
+      return password.match(/\s/);
     },
     get text() {
       return "비밀번호엔 공백이 들어갈 수 없습니다.";
@@ -260,7 +261,7 @@ rules = [
     check(password) {
       for (let c of ['do', 're', 'mi', 'fa', 'sol', 'ra', 'si']) {
         if (password.match(RegExp(c, 'gi'))) {
-          tmp = password.match(RegExp(c, 'gi'));
+          this.tmp = password.match(RegExp(c, 'gi'));
           return true;
         }
       }
@@ -268,7 +269,7 @@ rules = [
     },
     tmp: null,
     get text() {
-      return "비밀번호엔 음계의 이름이 들어갈 수 없습니다: "+tmp[0];
+      return this.tmp ? "비밀번호엔 음계의 이름이 들어갈 수 없습니다: "+tmp[0] : null;
     }
   },
   {
@@ -347,7 +348,7 @@ rules = [
     check(password) {
       for (let c of ['fk', 'sht', 'wtf', 'sbl']) {
         if (password.match(RegExp(c.split('').join('.*'), 'gi'))) {
-          tmp = c;
+          this.tmp = c;
           return true
         }
       }
@@ -355,7 +356,7 @@ rules = [
     },
     tmp: null,
     get text() {
-      return "비밀번호에 욕설을 연상시키는 문자들이 들어갈 수 없습니다. 순서를 바꾸거나 제외시켜주세요: "+tmp.split('').join('~');
+      return this.tmp ? "비밀번호에 욕설을 연상시키는 문자들이 들어갈 수 없습니다. 순서를 바꾸거나 제외시켜주세요: "+this.tmp.split('').join('~') : null;
     }
   },
   {
@@ -402,7 +403,7 @@ rules = [
     check(password) {
       for (let c of ccTLD) {
         if (password.includes(c[0])) {
-          tmp = [c[0], c[1]];
+          this.tmp = [c[0], c[1]];
           return true;
         }
       }
@@ -410,14 +411,14 @@ rules = [
     },
     tmp: null,
     get text() {
-      return "비밀번호엔 국가를 의미하는 도메인(ccTLD)이 소문자로 포함될 수 없습니다: "+tmp[0]+' ('+tmp[1]+')';
+      return this.tmp ? "비밀번호엔 국가를 의미하는 도메인(ccTLD)이 소문자로 포함될 수 없습니다: "+this.tmp[0]+' ('+this.tmp[1]+')' : null;
     }
   },
   {
     check(password) {
       for (let c of ccTLD) {
         if (password.includes(c[0].toUpperCase())) {
-          tmp = [c[0].toUpperCase(), c[1]];
+          this.tmp = [c[0].toUpperCase(), c[1]];
           return true;
         }
       }
@@ -425,7 +426,7 @@ rules = [
     },
     tmp: null,
     get text() {
-      return "비밀번호엔 국가를 의미하는 도메인(ccTLD)이 대문자로 포함될 수 없습니다: "+tmp[0]+' ('+tmp[1]+')';
+      return this.tmp ? "비밀번호엔 국가를 의미하는 도메인(ccTLD)이 대문자로 포함될 수 없습니다: "+this.tmp[0]+' ('+this.tmp[1]+')' : null;
     },
     detail: ccTLD.map(a => a[0]).join(' | '),
   },
@@ -634,17 +635,17 @@ rules = [
   {
     check(password) {
       if (password.match(/[Il|][Il|]/)) {
-        tmp = password.match(/[Il|][Il|]/)[0];
+        this.tmp = password.match(/[Il|][Il|]/)[0];
         return true;
       }
       if (password.match(/[O0][O0]/)) {
-        tmp = password.match(/[O0][O0]/)[0];
+        this.tmp = password.match(/[O0][O0]/)[0];
         return true;
       }
       return false;
     },
     get text() {
-      return "비밀번호에 비슷하게 보이는 문자는 붙어 있을 수 없습니다: "+tmp;
+      return this.tmp ? "비밀번호에 비슷하게 보이는 문자는 붙어 있을 수 없습니다: "+this.tmp : null;
     },
     detail: "(I, l, 1, |) (0, O)",
   },

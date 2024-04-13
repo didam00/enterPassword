@@ -103,7 +103,7 @@ var blackChar = [];
 var whiteChar = [];
 var used_password = [];
 var applyRules = [];
-while (applyRules.length < 10) {
+while (applyRules.length < 5) {
     var selectIndex = Math.floor(Math.random() * rules.length);
     if (applyRules.indexOf(selectIndex) < 0) { // 존재하지 않는 경우
         applyRules.push(selectIndex);
@@ -323,7 +323,7 @@ function applyPassword() {
     }
     if (no_rules.length > 0) {
         var ranIdx = Math.floor(Math.random() * no_rules.length);
-        if (applyRules.length - 10 >= 6 && applyRules.length % 6 == 0) {
+        if (applyRules.length - 5 >= 6 && applyRules.length % 6 == 0) {
             ranIdx *= -1;
         }
         applyRules.push(no_rules[ranIdx]);

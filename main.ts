@@ -1,6 +1,10 @@
 // main.ts
 /// <reference path='./external.d.ts' />
 
+const TYPE_POP_URL = "./res/typing-pop.mp3";
+const SHOOT_POP_URL = "./res/shooting-sound-fx.mp3";
+const SPREAD_POP_URL = "./res/pop.mp3";
+
 class Vector {
   x: number;
   y: number;
@@ -131,7 +135,10 @@ class HSL {
 }
 
 let pwDiv = document.querySelector('.password') as HTMLInputElement;
-pwDiv.addEventListener("keyup", checkRules);
+pwDiv.addEventListener("keyup", () => {
+  playSound(TYPE_POP_URL);
+  checkRules();
+});
 let error = false;
 let blackChar: string[] = [];
 let whiteChar: string[] = [];
@@ -422,9 +429,11 @@ function firework_particle() {
   let fw_ptcls: FireWorkParticle[] = [];
   let dust_ptcls: DustParticle[] = [];
 
+  playSound(SHOOT_POP_URL);
+
   for (let i = 0; i < applyRules.length - 5; i++) {
     let x = Math.random() * 1000 + 100;
-    fw_ptcls.push(new FireWorkParticle(x, canvas.height, new HSL(Math.random() * 360, 66, 40), Math.random()*30+30));
+    fw_ptcls.push(new FireWorkParticle(x, canvas.height, new HSL(Math.random() * 360, 66, 40), Math.random()*40+20));
   }
 
   let fw_loop = setInterval(function () {
@@ -443,6 +452,7 @@ function firework_particle() {
         clearInterval(p.loop);
         dust_ptcls = dust_ptcls.concat(p.explode(48));
         fw_ptcls.splice(fw_ptcls.indexOf(p), 1);
+        playSound(SPREAD_POP_URL);
       }
     })
 
@@ -462,4 +472,9 @@ function firework_particle() {
       clearInterval(fw_loop);
     }
   }, 1000/60)
+}
+
+function playSound(url: string) {
+  let audio = new Audio(url);
+  audio.play();
 }

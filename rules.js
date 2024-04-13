@@ -149,7 +149,7 @@ rules = [
   },
   {
     check(password) {
-      return password.includes(password.length);
+      return !password.includes(password.length);
     },
     get text() {
       return "비밀번호엔 비밀번호의 길이가 들어가야합니다.";

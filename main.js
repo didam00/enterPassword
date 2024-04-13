@@ -1,6 +1,9 @@
 "use strict";
 // main.ts
 /// <reference path='./external.d.ts' />
+var TYPE_POP_URL = "./res/typing-pop.mp3";
+var SHOOT_POP_URL = "./res/shooting-sound-fx.mp3";
+var SPREAD_POP_URL = "./res/pop.mp3";
 var Vector = /** @class */ (function () {
     function Vector(x, y) {
         this.x = x;
@@ -97,7 +100,10 @@ var HSL = /** @class */ (function () {
     return HSL;
 }());
 var pwDiv = document.querySelector('.password');
-pwDiv.addEventListener("keyup", checkRules);
+pwDiv.addEventListener("keyup", function () {
+    playSound(TYPE_POP_URL);
+    checkRules();
+});
 var error = false;
 var blackChar = [];
 var whiteChar = [];
@@ -369,9 +375,10 @@ function firework_particle() {
     var ctx = canvas.getContext('2d');
     var fw_ptcls = [];
     var dust_ptcls = [];
+    playSound(SHOOT_POP_URL);
     for (var i = 0; i < applyRules.length - 5; i++) {
         var x = Math.random() * 1000 + 100;
-        fw_ptcls.push(new FireWorkParticle(x, canvas.height, new HSL(Math.random() * 360, 66, 40), Math.random() * 30 + 30));
+        fw_ptcls.push(new FireWorkParticle(x, canvas.height, new HSL(Math.random() * 360, 66, 40), Math.random() * 40 + 20));
     }
     var fw_loop = setInterval(function () {
         // if (time >= 10) {
@@ -387,6 +394,7 @@ function firework_particle() {
                 clearInterval(p.loop);
                 dust_ptcls = dust_ptcls.concat(p.explode(48));
                 fw_ptcls.splice(fw_ptcls.indexOf(p), 1);
+                playSound(SPREAD_POP_URL);
             }
         });
         dust_ptcls.forEach(function (p) {
@@ -403,4 +411,8 @@ function firework_particle() {
             clearInterval(fw_loop);
         }
     }, 1000 / 60);
+}
+function playSound(url) {
+    var audio = new Audio(url);
+    audio.play();
 }

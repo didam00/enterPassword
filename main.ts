@@ -22,7 +22,7 @@ class DustParticle {
   life: number;
   _life: number;
   color: RGB | HSL;
-  loop: number;
+  loop: NodeJS.Timeout;
   vector: Vector;
   private _vector: Vector;
 
@@ -55,7 +55,7 @@ class FireWorkParticle {
   private _speed: number;
   private _life: number;
   color: RGB | HSL;
-  loop: number;
+  loop: NodeJS.Timeout;
 
   constructor (x: number, y: number, color: RGB | HSL, life: number = 100) {
     this.x = x;
@@ -180,26 +180,6 @@ function checkRules() {
     error = true;
     showRule(`비밀번호는 최대 ${used_password.length + 12}자까지 설정할 수 있습니다.`);
   }
-  if (password.match(/\s/)) {
-    error = true;
-    showRule("비밀번호엔 공백이 들어갈 수 없습니다.");
-  }
-  if (!password.match(/[A-Z]/)) {
-    error = true;
-    showRule("비밀번호엔 대문자가 하나 이상 들어가야합니다.");
-  }
-  if (!password.match(/[a-z]/)) {
-    error = true;
-    showRule("비밀번호엔 소문자가 하나 이상 들어가야합니다.");
-  }
-  if (!password.match(/[0-9]/)) {
-    error = true;
-    showRule("비밀번호엔 숫자가 하나 이상 들어가야합니다.");
-  }
-  if (!password.match(/[.`~!@#$%^&*|\\;:\/?_]/)) {
-    error = true;
-    showRule("비밀번호엔 특수기호가 하나 이상 들어가야합니다.");
-  }
   if (password.match(/[^a-zA-Z0-9`~!.@#$%^&*|\\;:\/?_]/)) {
     tmp = password.match(/[^a-zA-Z0-9`~!.@#$%^&*|\\;:\/?_]/)
     error = true;
@@ -219,6 +199,27 @@ function checkRules() {
     ruleDiv.addEventListener('mouseleave', () => {
       detailDiv.style.display = 'none';
     });
+  }
+  /*
+  if (password.match(/\s/)) {
+    error = true;
+    showRule("비밀번호엔 공백이 들어갈 수 없습니다.");
+  }
+  if (!password.match(/[A-Z]/)) {
+    error = true;
+    showRule("비밀번호엔 대문자가 하나 이상 들어가야합니다.");
+  }
+  if (!password.match(/[a-z]/)) {
+    error = true;
+    showRule("비밀번호엔 소문자가 하나 이상 들어가야합니다.");
+  }
+  if (!password.match(/[0-9]/)) {
+    error = true;
+    showRule("비밀번호엔 숫자가 하나 이상 들어가야합니다.");
+  }
+  if (!password.match(/[.`~!@#$%^&*|\\;:\/?_]/)) {
+    error = true;
+    showRule("비밀번호엔 특수기호가 하나 이상 들어가야합니다.");
   }
   if (password.match(/(.)\1\1/)) {
     error = true;
@@ -272,6 +273,8 @@ function checkRules() {
       break;
     }
   }
+
+  */
 
   for (let i of applyRules) {
     if (rules[i < 0 ? -i : i].check(password)) {
@@ -374,6 +377,16 @@ function applyPassword() {
   $('.re-pw-count').innerText = `비밀번호 바꾼 횟수: ${used_password.length}`
   $('.re-pw-count').style.fontSize = '13px';
   $('.re-pw-count').style.opacity = '1';
+  $('.re-pw-count').animate([
+    {
+      background: "#c0c0c0"
+    },
+    {
+      background: "#404040"
+    }
+  ], {
+    duration: 1500,
+  })
   $('#pw-wrap').style.width = `${240 + used_password.length * 15}px`
 
   $('#pw-wrap').classList.add('correct-eff');

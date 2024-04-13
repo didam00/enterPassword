@@ -140,12 +140,14 @@ body {
   background-color: #e0c02040;
   backdrop-filter: blur(3px);
   transition: all 200ms;
+  cursor: pointer;
 }
 
 .rules div:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 0px #c9ad22;
-  transition: all 500ms;
+  box-shadow: 0 4px 0px #ad951f;
+  transition: all 200ms;
+  border-color: #ad951f;
 }
 
 .rules div::before {
@@ -198,7 +200,7 @@ body {
 .detail {
   position: absolute;
   padding: 4px 7px;
-  background-color: #000000c0;
+  background-color: #00000085;
   color: #e9e7db;
   max-width: 450px;
   font-size: 12px;

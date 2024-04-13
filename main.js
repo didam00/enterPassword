@@ -1,3 +1,4 @@
+"use strict";
 // main.ts
 /// <reference path='./external.d.ts' />
 var Vector = /** @class */ (function () {
@@ -136,26 +137,6 @@ function checkRules() {
         error = true;
         showRule("\uBE44\uBC00\uBC88\uD638\uB294 \uCD5C\uB300 ".concat(used_password.length + 12, "\uC790\uAE4C\uC9C0 \uC124\uC815\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."));
     }
-    if (password.match(/\s/)) {
-        error = true;
-        showRule("비밀번호엔 공백이 들어갈 수 없습니다.");
-    }
-    if (!password.match(/[A-Z]/)) {
-        error = true;
-        showRule("비밀번호엔 대문자가 하나 이상 들어가야합니다.");
-    }
-    if (!password.match(/[a-z]/)) {
-        error = true;
-        showRule("비밀번호엔 소문자가 하나 이상 들어가야합니다.");
-    }
-    if (!password.match(/[0-9]/)) {
-        error = true;
-        showRule("비밀번호엔 숫자가 하나 이상 들어가야합니다.");
-    }
-    if (!password.match(/[.`~!@#$%^&*|\\;:\/?_]/)) {
-        error = true;
-        showRule("비밀번호엔 특수기호가 하나 이상 들어가야합니다.");
-    }
     if (password.match(/[^a-zA-Z0-9`~!.@#$%^&*|\\;:\/?_]/)) {
         tmp = password.match(/[^a-zA-Z0-9`~!.@#$%^&*|\\;:\/?_]/);
         error = true;
@@ -174,63 +155,6 @@ function checkRules() {
         ruleDiv.addEventListener('mouseleave', function () {
             detailDiv_1.style.display = 'none';
         });
-    }
-    if (password.match(/(.)\1\1/)) {
-        error = true;
-        tmp = password.match(/(.)\1\1/)[1];
-        showRule("비밀번호엔 한 문자가 3번 이상 연속으로 반복될 수 없습니다: " + tmp);
-    }
-    else if (password.match(/(..+)\1/)) {
-        error = true;
-        tmp = password.match(/(..+)\1/)[1];
-        showRule("비밀번호엔 한 단어가 2번 이상 연속으로 반복될 수 없습니다: " + tmp);
-    }
-    if (password.match(/(.).*\1.*\1.*\1.*\1/)) {
-        error = true;
-        tmp = password.match(/(..+)\1/)[1];
-        showRule("비밀번호엔 한 문자가 5번 이상 나올 수 없습니다: " + tmp);
-    }
-    if (!isNaN(Number(password[0]))) {
-        error = true;
-        showRule("비밀번호엔 첫 글자가 숫자로 시작할 수 없습니다.");
-    }
-    var uprepeat = 1;
-    var downrepeat = 1;
-    for (var i = 1; i < password.length; i++) {
-        if (ascii_password[i - 1] + 1 == ascii_password[i]) {
-            uprepeat++;
-        }
-        else
-            uprepeat = 1;
-        if (ascii_password[i - 1] - 1 == ascii_password[i]) {
-            downrepeat++;
-        }
-        else
-            downrepeat = 1;
-        if (uprepeat >= 3 || downrepeat >= 3) {
-            error = true;
-            showRule("\uBE44\uBC00\uBC88\uD638\uC5D4 \uBB38\uC790\uAC00 \uC21C\uC11C\uB300\uB85C 3\uBC88 \uC774\uC0C1 \uC5F0\uC18D\uC73C\uB85C \uC62C \uC218 \uC5C6\uC2B5\uB2C8\uB2E4: ".concat(password[i - 2], " - ").concat(password[i - 1], " - ").concat(password[i]));
-            break;
-        }
-    }
-    uprepeat = 1;
-    downrepeat = 1;
-    for (var i = 2; i < password.length; i += 2) {
-        if (ascii_password[i - 2] == ascii_password[i] + 1) {
-            uprepeat++;
-        }
-        else
-            uprepeat = 1;
-        if (ascii_password[i - 2] == ascii_password[i] - 1) {
-            downrepeat++;
-        }
-        else
-            downrepeat = 1;
-        if (uprepeat >= 3 || downrepeat >= 3) {
-            error = true;
-            showRule("\uBE44\uBC00\uBC88\uD638\uC5D4 \uBB38\uC790\uAC00 \uC21C\uC11C\uB300\uB85C 3\uBC88 \uC774\uC0C1 \uD55C \uAE00\uC790 \uAC74\uB108 \uB6F0\uC5B4 \uC5F0\uC18D\uC73C\uB85C \uC62C \uC218 \uC5C6\uC2B5\uB2C8\uB2E4: ".concat(password[i - 4], " - ").concat(password[i - 2], " - ").concat(password[i]));
-            break;
-        }
     }
     var _loop_1 = function (i) {
         if (rules[i < 0 ? -i : i].check(password)) {
@@ -265,6 +189,81 @@ function checkRules() {
             }
         }
     };
+    /*
+    if (password.match(/\s/)) {
+      error = true;
+      showRule("비밀번호엔 공백이 들어갈 수 없습니다.");
+    }
+    if (!password.match(/[A-Z]/)) {
+      error = true;
+      showRule("비밀번호엔 대문자가 하나 이상 들어가야합니다.");
+    }
+    if (!password.match(/[a-z]/)) {
+      error = true;
+      showRule("비밀번호엔 소문자가 하나 이상 들어가야합니다.");
+    }
+    if (!password.match(/[0-9]/)) {
+      error = true;
+      showRule("비밀번호엔 숫자가 하나 이상 들어가야합니다.");
+    }
+    if (!password.match(/[.`~!@#$%^&*|\\;:\/?_]/)) {
+      error = true;
+      showRule("비밀번호엔 특수기호가 하나 이상 들어가야합니다.");
+    }
+    if (password.match(/(.)\1\1/)) {
+      error = true;
+      tmp = (password.match(/(.)\1\1/) as RegExpMatchArray)[1];
+      showRule("비밀번호엔 한 문자가 3번 이상 연속으로 반복될 수 없습니다: "+tmp);
+    } else if (password.match(/(..+)\1/)) {
+      error = true;
+      tmp = (password.match(/(..+)\1/) as RegExpMatchArray)[1];
+      showRule("비밀번호엔 한 단어가 2번 이상 연속으로 반복될 수 없습니다: "+tmp);
+    }
+    if (password.match(/(.).*\1.*\1.*\1.*\1/)) {
+      error = true;
+      tmp = (password.match(/(..+)\1/) as RegExpMatchArray)[1];
+      showRule("비밀번호엔 한 문자가 5번 이상 나올 수 없습니다: "+tmp);
+    }
+    if(!isNaN(Number(password[0]))) {
+      error = true
+      showRule("비밀번호엔 첫 글자가 숫자로 시작할 수 없습니다.");
+    }
+    
+    let uprepeat = 1;
+    let downrepeat = 1;
+    for (let i = 1; i < password.length; i++) {
+      if (ascii_password[i-1] + 1 == ascii_password[i]) {
+        uprepeat++;
+      } else uprepeat = 1;
+      if (ascii_password[i-1] - 1 == ascii_password[i]) {
+        downrepeat++;
+      } else downrepeat = 1;
+  
+      if(uprepeat >= 3 || downrepeat >= 3) {
+        error = true;
+        showRule(`비밀번호엔 문자가 순서대로 3번 이상 연속으로 올 수 없습니다: ${password[i-2]} - ${password[i-1]} - ${password[i]}`);
+        break;
+      }
+    }
+    
+    uprepeat = 1;
+    downrepeat = 1;
+    for (let i = 2; i < password.length; i += 2) {
+      if (ascii_password[i-2] == ascii_password[i] + 1) {
+        uprepeat++;
+      } else uprepeat = 1;
+      if (ascii_password[i-2] == ascii_password[i] - 1) {
+        downrepeat++;
+      } else downrepeat = 1;
+  
+      if(uprepeat >= 3 || downrepeat >= 3) {
+        error = true;
+        showRule(`비밀번호엔 문자가 순서대로 3번 이상 한 글자 건너 뛰어 연속으로 올 수 없습니다: ${password[i-4]} - ${password[i-2]} - ${password[i]}`);
+        break;
+      }
+    }
+  
+    */
     for (var _i = 0, applyRules_1 = applyRules; _i < applyRules_1.length; _i++) {
         var i = applyRules_1[_i];
         _loop_1(i);
@@ -332,6 +331,16 @@ function applyPassword() {
     $('.re-pw-count').innerText = "\uBE44\uBC00\uBC88\uD638 \uBC14\uAFBC \uD69F\uC218: ".concat(used_password.length);
     $('.re-pw-count').style.fontSize = '13px';
     $('.re-pw-count').style.opacity = '1';
+    $('.re-pw-count').animate([
+        {
+            background: "#c0c0c0"
+        },
+        {
+            background: "#404040"
+        }
+    ], {
+        duration: 1500,
+    });
     $('#pw-wrap').style.width = "".concat(240 + used_password.length * 15, "px");
     $('#pw-wrap').classList.add('correct-eff');
     setTimeout(function () { $('#pw-wrap').classList.remove('correct-eff'); }, 400);

@@ -34,7 +34,121 @@ const SYMBOLS = /[`~!@#$%^&*|\\;:\/?_.]/g;
 rules = [
   {
     check(password) {
-      return !password.includes(password);
+      let uprepeat = 1, downrepaet = 1;
+      let asciiPassword = password.split('').map(a => a.charCodeAt())
+      for (let i = 2; i < password.length; i++) {
+        if (asciiPassword[i-2] + 1 == asciiPassword[i]) {
+          uprepeat++;
+        } else uprepeat = 1;
+        if (asciiPassword[i-2] - 1 == asciiPassword[i]) {
+          downrepaet++;
+        } else downrepaet = 1;
+
+        if (uprepeat >= 3 || downrepeat >= 3) return false;
+      }
+
+      return true
+    },
+    get text() {
+      return "비밀번호엔 문자가 순서대로 3번 이상 한 글자 건너 뛰어 연속으로 올 수 없습니다.";
+    }
+  },
+  {
+    check(password) {
+      let uprepeat = 1, downrepaet = 1;
+      let asciiPassword = password.split('').map(a => a.charCodeAt())
+      for (let i = 1; i < password.length; i++) {
+        if (asciiPassword[i-1] + 1 == asciiPassword[i]) {
+          uprepeat++;
+        } else uprepeat = 1;
+        if (asciiPassword[i-1] - 1 == asciiPassword[i]) {
+          downrepaet++;
+        } else downrepaet = 1;
+
+        if (uprepeat >= 3 || downrepeat >= 3) return false;
+      }
+
+      return true;
+    },
+    get text() {
+      return "비밀번호엔 문자가 순서대로 3번 이상 연속으로 올 수 없습니다.";
+    }
+  },
+  {
+    check(password) {
+      return isNaN(Number(password[0]));
+    },
+    get text() {
+      return "비밀번호엔 한 문자가 5번 이상 나올 수 없습니다.";
+    }
+  },
+  {
+    check(password) {
+      return !password.match(/(.).*\1.*\1.*\1.*\1/);
+    },
+    get text() {
+      return "비밀번호엔 한 문자가 5번 이상 나올 수 없습니다.";
+    }
+  },
+  {
+    check(password) {
+      return !password.match(/(..+)\1/);
+    },
+    get text() {
+      return "비밀번호엔 한 단어가 2번 이상 연속으로 반복될 수 없습니다.";
+    }
+  },
+  {
+    check(password) {
+      return !password.match(/(.)\1\1/);
+    },
+    get text() {
+      return "비밀번호엔 한 문자가 3번 이상 연속으로 반복될 수 없습니다.";
+    }
+  },
+  {
+    check(password) {
+      return password.match(/[0-9]/);
+    },
+    get text() {
+      return "비밀번호엔 숫자가 하나 이상 들어가야합니다.";
+    }
+  },
+  {
+    check(password) {
+      return password.match(/[.`~!@#$%^&*|\\;:\/?_]/);
+    },
+    get text() {
+      return "비밀번호엔 특수기호가 하나 이상 들어가야합니다.";
+    }
+  },
+  {
+    check(password) {
+      return password.match(/[a-z]/);
+    },
+    get text() {
+      return "비밀번호엔 소문자가 하나 이상 들어가야합니다.";
+    }
+  },
+  {
+    check(password) {
+      return password.match(/[A-Z]/);
+    },
+    get text() {
+      return "비밀번호엔 대문자가 하나 이상 들어가야합니다.";
+    }
+  },
+  {
+    check(password) {
+      return !password.match(/\s/);
+    },
+    get text() {
+      return "비밀번호엔 공백이 들어갈 수 없습니다.";
+    }
+  },
+  {
+    check(password) {
+      return password.includes(password.length);
     },
     get text() {
       return "비밀번호엔 비밀번호의 길이가 들어가야합니다.";

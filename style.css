@@ -213,7 +213,21 @@ body {
   }
 
   #pw-wrap {
-    display: flex;
     align-items: center;
+  }
+
+  .password {
+    text-align: center;
+  }
+
+  .apply-button {
+    display: none;
+  }
+
+  .particle {
+    left: 50%;
+    transform: translateX(-50%);
+    height: 200%;
+    width: auto;
   }
 }

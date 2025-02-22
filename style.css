@@ -206,3 +206,14 @@ body {
   font-size: 12px;
   display: none;
 }
+
+@media (max-width: 767px){
+  #wrap {
+    width: 90%;
+  }
+
+  #pw-wrap {
+    display: flex;
+    align-items: center;
+  }
+}
